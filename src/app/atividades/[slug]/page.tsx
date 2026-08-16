@@ -1,14 +1,13 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/auth";
+import { requireActiveSubscription } from "@/lib/access";
 import { getActivityBySlug } from "@/lib/activities";
 import { getOrCreatePlan, isActivityInPlan } from "@/lib/plans";
 import { CourtIcon } from "@/components/CourtIcon";
 import { addToPlanAction, removeFromPlanAction } from "@/app/actions/plan";
 
 export default async function AtividadePage({ params }: PageProps<"/atividades/[slug]">) {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
+  const session = await requireActiveSubscription();
 
   const { slug } = await params;
   const activity = getActivityBySlug(slug);

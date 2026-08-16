@@ -1,13 +1,11 @@
-import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { requireActiveSubscription } from "@/lib/access";
 import { getOrCreatePlan, getPlanActivities } from "@/lib/plans";
 import { CourtIcon } from "@/components/CourtIcon";
 import { Logo } from "@/components/Logo";
 import { PrintButton } from "./PrintButton";
 
 export default async function ImprimirPlanoPage() {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
+  const session = await requireActiveSubscription();
 
   const userId = (session.user as { id?: string }).id!;
   const plan = getOrCreatePlan(userId);

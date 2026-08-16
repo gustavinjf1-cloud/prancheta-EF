@@ -1,14 +1,12 @@
-import { redirect } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/auth";
+import { requireActiveSubscription } from "@/lib/access";
 import { getOrCreatePlan, getPlanActivities } from "@/lib/plans";
 import { CourtIcon } from "@/components/CourtIcon";
 import { removeFromPlanAction } from "@/app/actions/plan";
 import { RenamePlanForm } from "./RenamePlanForm";
 
 export default async function PlanoPage() {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
+  const session = await requireActiveSubscription();
 
   const userId = (session.user as { id?: string }).id!;
   const plan = getOrCreatePlan(userId);

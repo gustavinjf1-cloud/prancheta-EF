@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation";
-import { auth } from "@/auth";
+import { requireActiveSubscription } from "@/lib/access";
 import { listActivities, distinctValues, FAIXA_ETARIA_ORDER, BNCC_UNIDADES } from "@/lib/activities";
 import { ActivityCard } from "@/components/ActivityCard";
 import { FilterBar } from "@/components/FilterBar";
@@ -19,8 +18,7 @@ function orderBncc(values: string[]): string[] {
 export default async function AtividadesPage({
   searchParams,
 }: PageProps<"/atividades">) {
-  const session = await auth();
-  if (!session?.user) redirect("/login");
+  await requireActiveSubscription();
 
   const sp = await searchParams;
   const faixa = typeof sp.faixa === "string" ? sp.faixa : undefined;

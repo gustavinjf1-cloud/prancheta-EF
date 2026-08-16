@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
+import { isSubscriptionActive } from "@/lib/subscribers";
 import {
   getOrCreatePlan,
   addActivityToPlan,
@@ -12,7 +13,9 @@ import {
 async function requireUserId(): Promise<string> {
   const session = await auth();
   const id = (session?.user as { id?: string } | undefined)?.id;
-  if (!id) throw new Error("Não autenticado.");
+  const email = session?.user?.email;
+  if (!id || !email) throw new Error("Não autenticado.");
+  if (!isSubscriptionActive(email)) throw new Error("Assinatura inativa.");
   return id;
 }
 

@@ -65,6 +65,27 @@ function migrate(db: DatabaseSync) {
       position INTEGER NOT NULL,
       PRIMARY KEY (plan_id, activity_id)
     );
+
+    -- Controlado só pelos webhooks da Kiwify. Guardamos por e-mail (não por
+    -- user_id) porque o aviso de pagamento pode chegar antes ou depois da
+    -- professora criar a conta no app — o e-mail é o que liga as duas pontas.
+    CREATE TABLE IF NOT EXISTS subscribers (
+      email TEXT PRIMARY KEY,
+      status TEXT NOT NULL,
+      product TEXT,
+      last_event TEXT,
+      updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    -- Guarda o corpo bruto de cada webhook recebido, pra gente conseguir
+    -- conferir o formato real do payload da Kiwify e depurar sem precisar
+    -- vasculhar log de servidor.
+    CREATE TABLE IF NOT EXISTS webhook_logs (
+      id TEXT PRIMARY KEY,
+      source TEXT NOT NULL,
+      received_at TEXT NOT NULL DEFAULT (datetime('now')),
+      body TEXT NOT NULL
+    );
   `);
 }
 
