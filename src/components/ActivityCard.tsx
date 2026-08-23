@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { CourtIcon } from "./CourtIcon";
 import type { Activity } from "@/lib/activities";
@@ -8,8 +9,18 @@ export function ActivityCard({ activity }: { activity: Activity }) {
       href={`/atividades/${activity.slug}`}
       className="group flex gap-4 items-center bg-white rounded-2xl border border-black/5 p-4 hover:border-brand-blue/40 hover:shadow-sm transition"
     >
-      <div className="w-14 h-[74px] shrink-0">
-        <CourtIcon net={Boolean(activity.is_volei)} className="w-full h-full" />
+      <div className="w-14 h-[74px] shrink-0 rounded-lg overflow-hidden bg-black/[0.03]">
+        {activity.imagem ? (
+          <Image
+            src={activity.imagem}
+            alt={activity.title}
+            width={56}
+            height={74}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <CourtIcon net={Boolean(activity.is_volei)} className="w-full h-full" />
+        )}
       </div>
       <div className="min-w-0">
         <h3 className="font-bold leading-tight group-hover:text-brand-blue transition truncate">

@@ -11,6 +11,7 @@ export type Activity = {
   materiais: string;
   dica: string;
   is_volei: number;
+  imagem: string | null;
 };
 
 export type ActivityFilters = {
@@ -74,18 +75,27 @@ export function distinctValues(column: "faixa_etaria" | "espaco" | "bncc"): stri
 
 // Ordem "pedagógica" das faixas etárias, pra não depender de ordem alfabética nos filtros.
 export const FAIXA_ETARIA_ORDER = [
-  "Infantil (4-6 anos)",
-  "Fund. 1 (6-10 anos)",
-  "Fund. 1-2 (8-12 anos)",
-  "Fund. 2 (11-14 anos)",
-  "Ensino Médio",
+  "Educação Infantil (todas as idades)",
+  "Educação Infantil (4 a 5 anos)",
+  "Fundamental 1 (1º ano - 6 a 7 anos)",
+  "Fundamental 1 (2º ano - 7 a 8 anos)",
+  "Fundamental 1 (3º ano - 8 a 9 anos)",
 ];
 
+// Unidades temáticas da BNCC — campos de experiência da Educação Infantil primeiro,
+// depois as unidades temáticas de Educação Física do Fundamental 1.
 export const BNCC_UNIDADES = [
-  "Brincadeiras e jogos",
-  "Esportes",
-  "Ginásticas",
+  "Corpo, Gestos e Movimentos",
+  "O Eu, o Outro e o Nós",
+  "Escuta, Fala, Pensamento e Imaginação",
+  "Espaços, Tempos, Quantidades, Relações e Transformações",
+  "Traços, Sons, Cores e Formas",
+  "Brincadeiras e Jogos",
+  "Esportes de Invasão",
+  "Esportes de Rede e Parede",
+  "Esportes de Campo e Taco",
+  "Esportes de Marca e Precisão",
+  "Ginástica Geral",
   "Danças",
   "Lutas",
-  "Práticas corporais de aventura",
 ];

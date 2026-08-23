@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import Link from "next/link";
 import { requireActiveSubscription } from "@/lib/access";
 import { getActivityBySlug } from "@/lib/activities";
@@ -28,8 +29,18 @@ export default async function AtividadePage({ params }: PageProps<"/atividades/[
       </Link>
 
       <div className="bg-white rounded-2xl border border-black/5 p-6 flex flex-col sm:flex-row gap-6">
-        <div className="w-28 shrink-0 mx-auto sm:mx-0">
-          <CourtIcon net={Boolean(activity.is_volei)} className="w-full h-auto" />
+        <div className="w-28 shrink-0 mx-auto sm:mx-0 rounded-xl overflow-hidden bg-black/[0.03]">
+          {activity.imagem ? (
+            <Image
+              src={activity.imagem}
+              alt={activity.title}
+              width={112}
+              height={148}
+              className="w-full h-auto object-cover"
+            />
+          ) : (
+            <CourtIcon net={Boolean(activity.is_volei)} className="w-full h-auto" />
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold">{activity.title}</h1>

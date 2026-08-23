@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# banco sqlite local (gerado em runtime — dados reais vêm do seed em src/data/)
+/data/
+
 # production
 /build
 

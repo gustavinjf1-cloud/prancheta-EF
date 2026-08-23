@@ -2,6 +2,7 @@ import { DatabaseSync } from "node:sqlite";
 import path from "node:path";
 import fs from "node:fs";
 import crypto from "node:crypto";
+import seedActivitiesData from "@/data/atividades-seed.json";
 
 // Banco local em arquivo (SQLite embutido no Node — zero dependências externas).
 // Pra produção com mais de um servidor/instância, trocar por um Postgres gerenciado
@@ -49,7 +50,8 @@ function migrate(db: DatabaseSync) {
       descricao TEXT NOT NULL,
       materiais TEXT NOT NULL,
       dica TEXT NOT NULL,
-      is_volei INTEGER NOT NULL DEFAULT 0
+      is_volei INTEGER NOT NULL DEFAULT 0,
+      imagem TEXT
     );
 
     CREATE TABLE IF NOT EXISTS lesson_plans (
@@ -87,123 +89,74 @@ function migrate(db: DatabaseSync) {
       body TEXT NOT NULL
     );
   `);
+
+  // Banco já existia sem a coluna `imagem` (deploys anteriores) — adiciona se faltar.
+  const activityCols = db.prepare("PRAGMA table_info(activities)").all() as {
+    name: string;
+  }[];
+  if (!activityCols.some((c) => c.name === "imagem")) {
+    db.exec("ALTER TABLE activities ADD COLUMN imagem TEXT;");
+  }
 }
 
 type SeedActivity = {
   slug: string;
   title: string;
-  faixaEtaria: string;
+  faixa_etaria: string;
   espaco: string;
   bncc: string;
   descricao: string;
   materiais: string;
   dica: string;
-  isVolei?: boolean;
+  imagem: string | null;
 };
 
-const SEED_ACTIVITIES: SeedActivity[] = [
-  {
-    slug: "queimada-adaptada",
-    title: "Queimada Adaptada",
-    faixaEtaria: "Fund. 1 (6-10 anos)",
-    espaco: "Quadra ou pátio",
-    bncc: "Brincadeiras e jogos",
-    descricao:
-      "Clássica, mas com ajustes pra funcionar em turmas grandes e espaços menores. Divida a turma em dois times; quem for atingido vai pro \"banco\" do time adversário e pode voltar se o próprio time pegar a bola no ar.",
-    materiais: "1 bola de borracha macia (ou de vôlei leve)",
-    dica: "Em turmas muito grandes, use duas bolas ao mesmo tempo pra manter todo mundo em movimento.",
-  },
-  {
-    slug: "circuito-equilibrio",
-    title: "Circuito de Equilíbrio com Cones",
-    faixaEtaria: "Infantil (4-6 anos)",
-    espaco: "Sala ampla ou pátio",
-    bncc: "Ginásticas",
-    descricao:
-      "Monte um circuito com cones, fita no chão e bambolês. As crianças percorrem em fila, trabalhando equilíbrio, coordenação motora e noção espacial, sem precisar de material caro.",
-    materiais: "Cones, fita crepe ou giz, bambolês (opcional)",
-    dica: "Varie o circuito toda semana — só trocar a ordem das estações já renova o interesse da turma.",
-  },
-  {
-    slug: "volei-balao-dupla",
-    title: "Vôlei com Balão em Dupla",
-    faixaEtaria: "Fund. 1-2 (8-12 anos)",
-    espaco: "Quadra pequena ou sala",
-    bncc: "Esportes",
-    descricao:
-      "Introduz os fundamentos do vôlei sem a pressão da bola oficial — o balão desacelera o jogo e dá tempo de todo mundo participar. Em duplas, cada lado precisa se organizar pra não deixar o balão cair.",
-    materiais: "1 balão por dupla, barbante ou rede baixa (opcional)",
-    dica: "Combine um número mínimo de toques antes de passar pro outro lado — isso força a cooperação dentro da dupla.",
-    isVolei: true,
-  },
-  {
-    slug: "danca-das-cadeiras-cooperativa",
-    title: "Dança das Cadeiras Cooperativa",
-    faixaEtaria: "Infantil (4-6 anos)",
-    espaco: "Sala ampla ou pátio",
-    bncc: "Danças",
-    descricao:
-      "Versão sem eliminação da clássica dança das cadeiras: a cada rodada tira-se uma cadeira, mas todo mundo continua brincando dividindo o espaço que sobra. Termina quando só resta uma cadeira pra turma toda.",
-    materiais: "Cadeiras (uma a menos que o número de alunos) e música",
-    dica: "Funciona também com bambolês no chão no lugar das cadeiras, se o espaço for apertado.",
-  },
-  {
-    slug: "luta-de-fita-cooperativa",
-    title: "Luta de Fitas em Dupla",
-    faixaEtaria: "Fund. 2 (11-14 anos)",
-    espaco: "Quadra ou pátio",
-    bncc: "Lutas",
-    descricao:
-      "Cada aluno prende uma fita na cintura (por fora da roupa) e o objetivo é pegar a fita do colega sem deixar pegarem a sua. Introduz noções de esquiva, distância e contato controlado das lutas, sem contato físico direto.",
-    materiais: "2 fitas de tecido ou TNT por dupla",
-    dica: "Reforce as regras de segurança antes de começar — sem empurrar, sem segurar o colega, só a fita.",
-  },
-  {
-    slug: "trilha-de-obstaculos-aventura",
-    title: "Trilha de Obstáculos",
-    faixaEtaria: "Fund. 1 (6-10 anos)",
-    espaco: "Pátio ou área externa",
-    bncc: "Práticas corporais de aventura",
-    descricao:
-      "Um percurso com obstáculos simples (bancos, cones, pneus, cordas no chão) pra escalar, desviar e equilibrar. Introduz noções de risco calculado e superação de desafios físicos de forma segura.",
-    materiais: "Bancos, cones, pneus ou cordas — o que tiver disponível na escola",
-    dica: "Deixe as próprias crianças ajudarem a montar o percurso — aumenta o engajamento e o senso de pertencimento.",
-  },
-  {
-    slug: "handebol-adaptado-em-time",
-    title: "Handebol Adaptado 4x4",
-    faixaEtaria: "Ensino Médio",
-    espaco: "Quadra",
-    bncc: "Esportes",
-    descricao:
-      "Versão reduzida do handebol, com times menores e regras simplificadas, pra aumentar o número de toques na bola por aluno e o ritmo do jogo em turmas grandes.",
-    materiais: "1 bola de handebol (ou similar)",
-    dica: "Faça rodízio de times a cada gol — mantém todo mundo envolvido mesmo em turmas com muitos alunos de fora.",
-  },
+const SEED_ACTIVITIES = seedActivitiesData as unknown as SeedActivity[];
+
+// Atividades de demonstração do scaffolding inicial do app — taxonomia antiga,
+// incompatível com o banco de atividades real. Removidas assim que o banco
+// de verdade é semeado.
+const LEGACY_DEMO_SLUGS = [
+  "queimada-adaptada",
+  "circuito-equilibrio",
+  "volei-balao-dupla",
+  "danca-das-cadeiras-cooperativa",
+  "luta-de-fita-cooperativa",
+  "trilha-de-obstaculos-aventura",
+  "handebol-adaptado-em-time",
 ];
 
 function seed(db: DatabaseSync) {
-  const { count } = db.prepare("SELECT COUNT(*) as count FROM activities").get() as {
-    count: number;
-  };
-  if (count > 0) return;
+  const placeholders = LEGACY_DEMO_SLUGS.map(() => "?").join(",");
+  db.prepare(`DELETE FROM activities WHERE slug IN (${placeholders})`).run(
+    ...LEGACY_DEMO_SLUGS,
+  );
 
-  const insert = db.prepare(`
-    INSERT INTO activities (id, slug, title, faixa_etaria, espaco, bncc, descricao, materiais, dica, is_volei)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  const upsert = db.prepare(`
+    INSERT INTO activities (id, slug, title, faixa_etaria, espaco, bncc, descricao, materiais, dica, is_volei, imagem)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?)
+    ON CONFLICT(slug) DO UPDATE SET
+      title = excluded.title,
+      faixa_etaria = excluded.faixa_etaria,
+      espaco = excluded.espaco,
+      bncc = excluded.bncc,
+      descricao = excluded.descricao,
+      materiais = excluded.materiais,
+      dica = excluded.dica,
+      imagem = excluded.imagem
   `);
   for (const a of SEED_ACTIVITIES) {
-    insert.run(
+    upsert.run(
       crypto.randomUUID(),
       a.slug,
       a.title,
-      a.faixaEtaria,
+      a.faixa_etaria,
       a.espaco,
       a.bncc,
       a.descricao,
       a.materiais,
       a.dica,
-      a.isVolei ? 1 : 0,
+      a.imagem,
     );
   }
 }
