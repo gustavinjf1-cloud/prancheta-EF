@@ -24,10 +24,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         {session?.user && (
           <nav className="border-b border-black/5 bg-white">
             <div className="max-w-4xl mx-auto flex items-center justify-between px-4 py-3">
-              <Link href="/atividades">
+              <Link href="/">
                 <Logo />
               </Link>
               <div className="flex items-center gap-4 text-sm">
+                <Link href="/" className="hover:text-brand-blue">
+                  Início
+                </Link>
                 <Link href="/atividades" className="hover:text-brand-blue">
                   Atividades
                 </Link>
