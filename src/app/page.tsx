@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { requireActiveSubscription } from "@/lib/access";
-import { NIVEIS, faixasDisponiveis, nivelTemConteudo } from "@/lib/turmas";
+import { NIVEIS, COR_CLASSES, faixasDisponiveis, nivelTemConteudo } from "@/lib/turmas";
 
 export default async function Home() {
   await requireActiveSubscription();
@@ -38,13 +38,15 @@ export default async function Home() {
             );
           }
 
+          const cor = COR_CLASSES[nivel.cor];
           return (
             <Link
               key={nivel.slug}
               href={href}
-              className="group rounded-2xl border border-black/5 bg-white p-5 hover:border-brand-blue/40 hover:shadow-sm transition"
+              className={`group rounded-2xl border ${cor.border} ${cor.bg} p-5 hover:shadow-md transition`}
             >
-              <h2 className="font-bold text-lg group-hover:text-brand-blue transition">
+              <span className={`inline-block w-9 h-9 rounded-xl ${cor.icon}`} aria-hidden />
+              <h2 className={`font-bold text-lg mt-3 transition ${cor.hoverText}`}>
                 {nivel.titulo}
               </h2>
               <p className="text-sm text-black/60 mt-1">{nivel.subtitulo}</p>

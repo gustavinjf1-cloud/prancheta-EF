@@ -13,6 +13,42 @@ export type Nivel = {
   // Educação Infantil não tem "anos" — clica e já cai direto nas atividades.
   linkDireto?: string;
   anos?: Ano[];
+  cor: NivelCor;
+};
+
+// Uma cor de identidade por nível, só usada quando o nível tem conteúdo --
+// "Em breve" continua cinza de propósito, pra reforçar visualmente o que já
+// dá pra usar. Cores dos hex em globals.css (--color-*).
+export type NivelCor = "amarelo" | "azul" | "laranja" | "vermelho";
+
+export const COR_CLASSES: Record<
+  NivelCor,
+  { bg: string; border: string; icon: string; hoverText: string }
+> = {
+  amarelo: {
+    bg: "bg-brand-yellow/10",
+    border: "border-brand-yellow/50",
+    icon: "bg-brand-yellow",
+    hoverText: "group-hover:text-[#8a6110]",
+  },
+  azul: {
+    bg: "bg-brand-blue/10",
+    border: "border-brand-blue/50",
+    icon: "bg-brand-blue",
+    hoverText: "group-hover:text-brand-blue",
+  },
+  laranja: {
+    bg: "bg-brand-orange/10",
+    border: "border-brand-orange/50",
+    icon: "bg-brand-orange",
+    hoverText: "group-hover:text-brand-orange",
+  },
+  vermelho: {
+    bg: "bg-brand-red/10",
+    border: "border-brand-red/50",
+    icon: "bg-brand-red",
+    hoverText: "group-hover:text-brand-red",
+  },
 };
 
 export const NIVEIS: Nivel[] = [
@@ -21,11 +57,13 @@ export const NIVEIS: Nivel[] = [
     titulo: "Educação Infantil",
     subtitulo: "Atividades pra turma toda, sem separar por ano.",
     linkDireto: "Educação Infantil",
+    cor: "amarelo",
   },
   {
     slug: "fundamental-iniciais",
     titulo: "Ensino Fundamental — Anos Iniciais",
     subtitulo: "1º ao 5º ano",
+    cor: "azul",
     anos: [
       { label: "1º ano", faixaEtaria: "1º ano" },
       { label: "2º ano", faixaEtaria: "2º ano" },
@@ -38,6 +76,7 @@ export const NIVEIS: Nivel[] = [
     slug: "fundamental-finais",
     titulo: "Ensino Fundamental — Anos Finais",
     subtitulo: "6º ao 9º ano",
+    cor: "laranja",
     anos: [
       { label: "6º ano", faixaEtaria: "6º ano" },
       { label: "7º ano", faixaEtaria: "7º ano" },
@@ -49,6 +88,7 @@ export const NIVEIS: Nivel[] = [
     slug: "ensino-medio",
     titulo: "Ensino Médio",
     subtitulo: "1ª à 3ª série",
+    cor: "vermelho",
     anos: [
       { label: "1ª série", faixaEtaria: "1ª série EM" },
       { label: "2ª série", faixaEtaria: "2ª série EM" },

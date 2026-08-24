@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireActiveSubscription } from "@/lib/access";
-import { getNivel, faixasDisponiveis } from "@/lib/turmas";
+import { getNivel, faixasDisponiveis, COR_CLASSES } from "@/lib/turmas";
 
 export default async function TurmaPage({ params }: PageProps<"/turma/[nivel]">) {
   await requireActiveSubscription();
@@ -11,6 +11,7 @@ export default async function TurmaPage({ params }: PageProps<"/turma/[nivel]">)
   if (!nivel || !nivel.anos) notFound();
 
   const disponiveis = faixasDisponiveis();
+  const cor = COR_CLASSES[nivel.cor];
 
   return (
     <div className="max-w-4xl w-full mx-auto px-4 py-8 flex flex-col gap-6">
@@ -45,9 +46,9 @@ export default async function TurmaPage({ params }: PageProps<"/turma/[nivel]">)
             <Link
               key={ano.label}
               href={`/atividades?faixa=${encodeURIComponent(ano.faixaEtaria)}`}
-              className="group rounded-2xl border border-black/5 bg-white p-5 text-center hover:border-brand-blue/40 hover:shadow-sm transition"
+              className={`group rounded-2xl border ${cor.border} ${cor.bg} p-5 text-center hover:shadow-md transition`}
             >
-              <h2 className="font-bold group-hover:text-brand-blue transition">{ano.label}</h2>
+              <h2 className={`font-bold transition ${cor.hoverText}`}>{ano.label}</h2>
             </Link>
           );
         })}

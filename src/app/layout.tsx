@@ -23,6 +23,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col font-sans bg-brand-offwhite text-brand-ink">
         {session?.user && (
           <nav className="border-b border-black/5 bg-white">
+            <div className="h-1.5 bg-[linear-gradient(90deg,var(--color-blue)_0%,var(--color-blue)_25%,var(--color-yellow)_25%,var(--color-yellow)_50%,var(--color-orange)_50%,var(--color-orange)_75%,var(--color-red)_75%,var(--color-red)_100%)]" />
             <div className="max-w-4xl mx-auto flex items-center justify-between px-4 py-3">
               <Link href="/">
                 <Logo />
