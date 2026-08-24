@@ -1,5 +1,11 @@
 import { requireActiveSubscription } from "@/lib/access";
-import { listActivities, distinctValues, FAIXA_ETARIA_ORDER, BNCC_UNIDADES } from "@/lib/activities";
+import {
+  listActivities,
+  distinctValues,
+  FAIXA_ETARIA_ORDER,
+  ESPACO_ORDER,
+  BNCC_UNIDADES,
+} from "@/lib/activities";
 import { ActivityCard } from "@/components/ActivityCard";
 import { FilterBar } from "@/components/FilterBar";
 
@@ -7,6 +13,10 @@ function orderFaixas(values: string[]): string[] {
   return [...values].sort(
     (a, b) => FAIXA_ETARIA_ORDER.indexOf(a) - FAIXA_ETARIA_ORDER.indexOf(b),
   );
+}
+
+function orderEspacos(values: string[]): string[] {
+  return [...values].sort((a, b) => ESPACO_ORDER.indexOf(a) - ESPACO_ORDER.indexOf(b));
 }
 
 function orderBncc(values: string[]): string[] {
@@ -28,7 +38,7 @@ export default async function AtividadesPage({
 
   const activities = listActivities({ faixaEtaria: faixa, espaco, bncc, q });
   const faixasEtarias = orderFaixas(distinctValues("faixa_etaria"));
-  const espacos = distinctValues("espaco");
+  const espacos = orderEspacos(distinctValues("espaco"));
   const bnccUnidades = orderBncc(distinctValues("bncc"));
 
   return (

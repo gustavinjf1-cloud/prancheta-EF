@@ -74,12 +74,15 @@ export function distinctValues(column: "faixa_etaria" | "espaco" | "bncc"): stri
 }
 
 // Ordem "pedagógica" das faixas etárias, pra não depender de ordem alfabética nos filtros.
-export const FAIXA_ETARIA_ORDER = [
-  "Educação Infantil (todas as idades)",
-  "Educação Infantil (4 a 5 anos)",
-  "Fundamental 1 (1º ano - 6 a 7 anos)",
-  "Fundamental 1 (2º ano - 7 a 8 anos)",
-  "Fundamental 1 (3º ano - 8 a 9 anos)",
+export const FAIXA_ETARIA_ORDER = ["Educação Infantil", "1º ano", "2º ano", "3º ano"];
+
+// Ordem "prática" dos espaços — do mais restrito (só quadra) ao mais flexível —
+// pra facilitar a professora escolher pelo que tem disponível no dia.
+export const ESPACO_ORDER = [
+  "Quadra",
+  "Ao ar livre (quadra ou pátio)",
+  "Sala de aula",
+  "Qualquer espaço (dentro ou fora)",
 ];
 
 // Unidades temáticas da BNCC — campos de experiência da Educação Infantil primeiro,
