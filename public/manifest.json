@@ -1,8 +1,10 @@
 {
+  "id": "/",
   "name": "Prancheta EF",
   "short_name": "Prancheta EF",
   "description": "Banco de atividades de Educação Física escolar por faixa etária, espaço e BNCC.",
-  "start_url": "/atividades",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#F7F6F2",
   "theme_color": "#378ADD",
